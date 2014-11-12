@@ -12,8 +12,8 @@ BOOL have_cpuid()
 {
     int state = 0;
 #ifdef _MSC_VER
-    /* Intel 64 and IA-32 Architectures Software Developer’s Manual, vol. 1, chapter 17.1.2:
-     *  Bit 21 (ID) — Determines if the processor is able to execute the CPUID instruction. The ability to set and clear
+    /* Intel 64 and IA-32 Architectures Software Developer's Manual, vol. 1, chapter 17.1.2:
+     *  Bit 21 (ID) Determines if the processor is able to execute the CPUID instruction. The ability to set and clear
      *  this bit indicates that it is a Pentium 4, Intel Xeon, P6 family, Pentium, or later-version Intel486 processor.
      */
     __asm {
@@ -29,11 +29,11 @@ BOOL have_cpuid()
         mov state, eax
     }
 #else
-    //todo: adapt inline assembly to other configurations
+    /* TODO: adapt inline assembly to other configurations */
 #error "Cannot detect CPUID presence in current build configuration"
 #endif
 
-    // Clamp value to 0 or 1
+    /* Clamp value to 0 or 1 */
     return !!state;
 }
 
@@ -63,7 +63,7 @@ void cpuid(int function, int *reg_eax, int *reg_ebx, int *reg_ecx, int *reg_edx)
         mov dreg, edx
     }
 #else
-    //todo: adapt inline assembly to other configurations
+    /* TODO: adapt inline assembly to other configurations */
 #error "Cannot execute CPUID in current build configuration"
 #endif
 
@@ -88,12 +88,15 @@ int main()
 
     printf(STRING_VALUE, "Have CPUID", (cpuid_present ? "YES" : "NO"));
     if (!cpuid_present)
-        // Cancel further detection if CPUID is not available
+        /* Cancel further detection if CPUID is not available */
         return;
 
     cpuid(0, &eax, (int*)vendor_string, (int*)(vendor_string + 8), (int*)(vendor_string + 4));
     vendor_string[12] = 0;
 
+    /* CPU capabilities check is done using CPUID, as described in Intel 64 and IA-32 Architectures
+     * Software Developer's Manual, vol. 2, section "CPUID-CPU Identification"
+     */
     printf(NUMBER_VALUE, "Max CPUID function", eax);
     printf(STRING_VALUE, "CPU vendor string", vendor_string);
 
