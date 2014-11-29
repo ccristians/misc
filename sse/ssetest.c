@@ -1,6 +1,7 @@
+#include "simd_x86.h"
+
 #include <stdio.h>
 #include <malloc.h>
-#include <intrin.h>
 #include <windows.h>
 
 #pragma warning(disable:4996)
@@ -87,6 +88,7 @@ int main(int argc, char* argv[])
 
 #ifdef VECTORIZE
         for (i = 0; i < iterations / 4; i += 2) {
+            // Two SSE additions, giving an effective unrolling factor of 8
             vec3a[i] = _mm_add_ps(vec1a[i], vec2a[i]);
             vec3a[i + 1] = _mm_add_ps(vec1a[i + 1], vec2a[i + 1]);
         }
