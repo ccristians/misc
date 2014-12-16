@@ -1,0 +1,1 @@
+Source code used by: https://ccristians.wordpress.com/2014/12/16/qt-likely-or-unlikely/
