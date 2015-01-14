@@ -5,5 +5,5 @@ int func1(int param)
 
 int func2(int param)
 {
-    return param;
+    return param - 1;
 }

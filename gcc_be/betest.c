@@ -1,54 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define BUFF_SIZE 1000000
+#define RUN_CNT 10000 // Number of test runs
 
 extern int func1(int param);
 extern int func2(int param);
 
 int main(int argc, char *argv[])
 {
-    char *branch_buffer;
     int i, j;
-    int runs;
+    int fill;
+    int size;
     int result = 0;
+    char *buffer = NULL;
 
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s run_count\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    runs = atoi(argv[1]);
-    if (runs <= 0) {
-        fprintf(stderr, "Run count must be a positive integer");
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s fill_value buffer_size\n", argv[0]);
         exit(EXIT_FAILURE);
     }
     
-    branch_buffer = calloc(BUFF_SIZE, sizeof(*branch_buffer));
-    if (branch_buffer == NULL) {
+    fill = atoi(argv[1]);
+    size = atoi(argv[2]);
+    
+    buffer = (char*)malloc(size * sizeof(*buffer));
+    if (buffer == NULL) {
         fprintf(stderr, "calloc() failed");
         exit(EXIT_FAILURE);
     }
 
-#ifdef CORRECT_PREDICTION
-    memset(branch_buffer, 1, BUFF_SIZE * sizeof(*branch_buffer));
-#endif
+    memset(buffer, fill, size * sizeof(*buffer));
     
-    for (i = 0; i < runs; i++) {
-        for (j = 0; j < BUFF_SIZE; j++) {
+    for (i = 0; i < RUN_CNT; i++) {
+        for (j = 0; j < size; j++) {
 #ifdef EXPECTED_VALUE
-            if (__builtin_expect(branch_buffer[j], EXPECTED_VALUE)) {
+            if (__builtin_expect(buffer[j], EXPECTED_VALUE)) {
 #else
-            if (branch_buffer[j]) {
+            if (buffer[j]) {
 #endif
                 result += func1(j);
-             } else {
+            } else {
                 result += func2(j);
-             }
+            }
         }
     }
 
-    printf("Result: %d\n", result);
+    printf("Result: %d (size: %d, fill: %d)\n", result, size, fill);
 
     return 0;
 }
