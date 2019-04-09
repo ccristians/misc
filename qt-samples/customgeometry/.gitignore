@@ -1,0 +1,8 @@
+*.pro.user
+*.vcxproj.filters
+*.vcxproj.user
+Makefile
+Makefile.*
+
+release/
+debug/
